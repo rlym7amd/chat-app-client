@@ -1,3 +1,4 @@
+import { format, parseISO } from "date-fns";
 import { MessageCircle, SquarePen } from "lucide-react";
 import { Link } from "react-router";
 
@@ -95,8 +96,16 @@ export default function Conversation() {
           {/* Message Display Area */}
           <div className="flex-1 overflow-y-auto [scrollbar-width:thin] [scrollbar-color:rgb(220_220_220)_transparent] mb-4">
             {mockData.conversations[0].messages.map((message, index) => (
-              <div key={index} className="p-3 rounded-lg max-w-xs mb-2">
-                {message.text}
+              <div key={index} className="mb-2 space-y-1">
+                <div className="space-x-2">
+                  <span className="font-medium">
+                    {mockData.users[message.senderId - 1].name}
+                  </span>
+                  <time className="text-xs text-neutral-700">
+                    {format(parseISO(message.timestamp), "dd/MM/yy, hh:mm aa")}
+                  </time>
+                </div>
+                <p className="text-sm">{message.text}</p>
               </div>
             ))}
           </div>

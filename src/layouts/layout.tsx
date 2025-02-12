@@ -2,10 +2,31 @@ import { MessageCircle, SquarePen } from "lucide-react";
 import { Link, Outlet, useNavigate, useParams } from "react-router";
 import { conversations } from "../__mocks__/conversations";
 import { users } from "../__mocks__/users";
+import { useEffect, useState } from "react";
+import { fetchWithAuth } from "../utils/helpers";
 
 const LOGEDIN_USERID = 1;
 
-export default function Sidebar() {
+type User = {
+  id: string;
+  name: string;
+  email: string;
+};
+
+export default function Layout() {
+  const [user, setUser] = useState<User>();
+  const [isLoading, setIsloading] = useState(false);
+
+  useEffect(() => {
+    setIsloading(true);
+    fetchWithAuth(`${import.meta.env.VITE_API_DOMAIN}/api/user/profile`, {
+      credentials: "include",
+    })
+      .then((res) => res.json())
+      .then((data) => setUser(data))
+      .finally(() => setIsloading(false));
+  }, []);
+
   const loggedinUserConversation = conversations.filter((conversation) =>
     conversation.participants.includes(LOGEDIN_USERID)
   );
@@ -32,12 +53,10 @@ export default function Sidebar() {
         </div>
 
         <div className="mt-auto border-t border-neutral-400">
-          <Link
-            to="/login"
-            className="text-base p-4 inline-block w-full hover:bg-neutral-100 transition-colors"
-          >
-            Login
-          </Link>
+          <p className="text-base p-4 inline-block w-full hover:bg-neutral-100 transition-colors">
+            {isLoading && "Loading..."}
+            {user && user.name}
+          </p>
         </div>
       </nav>
       <Outlet />

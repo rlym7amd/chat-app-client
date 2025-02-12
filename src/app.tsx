@@ -1,9 +1,9 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router";
-import Register from "./components/Register";
-import Login from "./components/Login";
-import AuthLayout from "./components/Auth-layout";
-import Conversation from "./components/Conversation";
-import SideBar from "./components/Sidebar";
+import Register from "./pages/register";
+import Login from "./pages/login";
+import AuthLayout from "./pages/auth-layout";
+import Conversation from "./pages/conversation";
+import SideBar from "./pages/sidebar";
 
 export default function App() {
   return (

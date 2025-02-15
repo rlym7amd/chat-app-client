@@ -3,7 +3,7 @@ import Register from "./pages/Register";
 import Login from "./pages/Login";
 import AuthLayout from "./components/AuthLayout";
 import Conversation from "./pages/Conversation";
-import Layout from "./components/SidebarLayout";
+import SidebarLayout from "./components/SidebarLayout";
 
 export default function App() {
   return (
@@ -13,7 +13,7 @@ export default function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
         </Route>
-        <Route element={<Layout />}>
+        <Route element={<SidebarLayout />}>
           <Route
             path="/"
             element={<div className="p-4">Please, select a conversation</div>}

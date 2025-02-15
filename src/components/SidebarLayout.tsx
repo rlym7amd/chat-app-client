@@ -13,7 +13,7 @@ export type User = {
   email: string;
 };
 
-export default function Layout() {
+export default function SidebarLayout() {
   const [user, setUser] = useState<User>();
   const [isLoading, setIsloading] = useState(false);
   const navigate = useNavigate();

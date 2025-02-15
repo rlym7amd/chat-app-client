@@ -1,5 +1,5 @@
 import { MessageCircle, SquarePen } from "lucide-react";
-import { Link, Outlet, useNavigate, useParams } from "react-router";
+import { Outlet, useNavigate, useParams } from "react-router";
 import { conversations } from "../__mocks__/conversations";
 import { users } from "../__mocks__/users";
 import { useEffect, useState } from "react";
@@ -7,7 +7,7 @@ import { fetchWithAuth } from "../utils/helpers";
 
 const LOGEDIN_USERID = 1;
 
-type User = {
+export type User = {
   id: string;
   name: string;
   email: string;
@@ -16,6 +16,7 @@ type User = {
 export default function Layout() {
   const [user, setUser] = useState<User>();
   const [isLoading, setIsloading] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     setIsloading(true);
@@ -24,6 +25,7 @@ export default function Layout() {
     })
       .then((res) => res.json())
       .then((data) => setUser(data))
+      .catch(() => navigate("login"))
       .finally(() => setIsloading(false));
   }, []);
 
@@ -53,10 +55,25 @@ export default function Layout() {
         </div>
 
         <div className="mt-auto border-t border-neutral-400">
-          <p className="text-base p-4 inline-block w-full hover:bg-neutral-100 transition-colors">
-            {isLoading && "Loading..."}
-            {user && user.name}
-          </p>
+          {user && (
+            <div className="flex justify-between w-full">
+              <p className="text-base p-4">
+                {isLoading ? "Loading..." : user.name}
+              </p>
+              <button
+                className="cursor-pointer p-4 border-l border-neutral-400 hover:bg-neutral-100 transition-colors"
+                onClick={() => {
+                  fetch(`${import.meta.env.VITE_API_DOMAIN}/api/auth/logout`, {
+                    method: "POST",
+                    credentials: "include",
+                  });
+                  navigate("login");
+                }}
+              >
+                Logout
+              </button>
+            </div>
+          )}
         </div>
       </nav>
       <Outlet />

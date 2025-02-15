@@ -1,14 +1,37 @@
 import { format, parseISO } from "date-fns";
 import { useParams } from "react-router";
-import { conversations } from "../__mocks__/conversations";
-import { users } from "../__mocks__/users";
+import { useEffect, useState } from "react";
+import { User } from "../components/SidebarLayout";
+import { fetchWithAuth } from "../utils/helpers";
+
+type Conversation = {
+  messages: {
+    content: string;
+    createdAt: string;
+    senderId: string;
+    sender: User;
+  }[];
+};
 
 export default function ConversationPane() {
   const { conversationId } = useParams();
+  console.log({ conversationId });
+  const [conversation, setConversation] = useState<Conversation>();
+  const [isLoading, setIsLoading] = useState(false);
 
-  const conversation = conversations.find(
-    (conversation) => conversation.id === parseInt(conversationId!)
-  );
+  useEffect(() => {
+    setIsLoading(true);
+    fetchWithAuth(
+      `${import.meta.env.VITE_API_DOMAIN}/api/conversations/${conversationId}`
+    )
+      .then((res) => res.json())
+      .then((data) => setConversation(data))
+      .finally(() => setIsLoading(false));
+  }, [conversationId]);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <main className="flex-1">
@@ -18,14 +41,13 @@ export default function ConversationPane() {
           {conversation?.messages.map((message, index) => (
             <div key={index} className="mb-2 space-y-1">
               <div className="space-x-2">
-                <span className="font-medium">
-                  {users.find((user) => user.id === message.senderId)?.name}
-                </span>
+                <span className="font-medium">{message.sender.name}</span>
                 <time className="text-xs text-neutral-700">
-                  {format(parseISO(message.timestamp), "dd/MM/yy, hh:mm aa")}
+                  {format(parseISO(message.createdAt), "dd/MM/yy, hh:mm aa")}
+                  {/* {message.createdAt} */}
                 </time>
               </div>
-              <p className="text-sm">{message.text}</p>
+              <p className="text-sm">{message.content}</p>
             </div>
           ))}
         </div>

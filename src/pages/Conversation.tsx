@@ -4,18 +4,18 @@ import { useEffect, useState } from "react";
 import { User } from "../components/SidebarLayout";
 import { fetchWithAuth } from "../utils/helpers";
 
-type Conversation = {
+interface Conversation {
+  id: string;
+  createdAt: string;
   messages: {
     content: string;
     createdAt: string;
-    senderId: string;
     sender: User;
   }[];
-};
+}
 
 export default function ConversationPane() {
   const { conversationId } = useParams();
-  console.log({ conversationId });
   const [conversation, setConversation] = useState<Conversation>();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -44,7 +44,6 @@ export default function ConversationPane() {
                 <span className="font-medium">{message.sender.name}</span>
                 <time className="text-xs text-neutral-700">
                   {format(parseISO(message.createdAt), "dd/MM/yy, hh:mm aa")}
-                  {/* {message.createdAt} */}
                 </time>
               </div>
               <p className="text-sm">{message.content}</p>

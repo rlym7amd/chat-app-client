@@ -1,6 +1,7 @@
 import { ChevronsUpDown, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { User } from "./SidebarLayout";
+import { fetchWithAuth } from "../utils/helpers";
 
 export default function Modal(props: {
   userId: string;
@@ -9,6 +10,7 @@ export default function Modal(props: {
 }) {
   const ref = useRef<HTMLDialogElement>(null);
   const [friends, setFriends] = useState<User[]>();
+  const [receiptId, setReceiptId] = useState<string>();
 
   useEffect(() => {
     if (props.isOpen) {
@@ -51,18 +53,40 @@ export default function Modal(props: {
               name="user"
               id="user"
               className="appearance-none focus:outline-none w-full px-2 py-1"
-              defaultValue={friends && friends[0].name}
+              defaultValue={friends && friends[0].id}
+              onChange={(e) => setReceiptId(e.target.value)}
             >
               {friends &&
                 friends.map((friend) => (
-                  <option key={friend.id} value={friend.name}>
+                  <option key={friend.id} value={friend.id}>
                     {friend.name}
                   </option>
                 ))}
             </select>
             <ChevronsUpDown className="size-4 absolute  top-1/2 right-2 -translate-y-1/2" />
           </div>
-          <button className="mt-2 py-1.5 px-3 bg-blue-700 hover:bg-blue-500 transition-colors cursor-pointer rounded-md text-white font-semibold">
+          <button
+            type="button"
+            className="mt-2 py-1.5 px-3 bg-blue-700 hover:bg-blue-500 transition-colors cursor-pointer rounded-md text-white font-semibold"
+            onClick={() => {
+              fetchWithAuth(
+                `${import.meta.env.VITE_API_DOMAIN}/api/conversations`,
+                {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({
+                    usersId: [props.userId, receiptId],
+                  }),
+                },
+              )
+                .then((res) => res.json())
+                .then((data) => console.log(data.message))
+                .catch((err) => console.error(err.message))
+                .finally(() => ref.current?.close());
+            }}
+          >
             Send
           </button>
         </form>

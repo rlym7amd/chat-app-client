@@ -31,7 +31,6 @@ export default function SidebarLayout() {
     })
       .then((res) => res.json())
       .then((data) => setUser(data))
-      // .catch(() => navigate("login"))
       .finally(() => setIsUserLoading(false));
   }, []);
 

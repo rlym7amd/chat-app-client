@@ -11,7 +11,7 @@ export async function fetchWithAuth(url: string, options: RequestInit = {}) {
         ...options,
         credentials: "include",
         method: "POST",
-      }
+      },
     );
 
     if (!refreshRes.ok) {

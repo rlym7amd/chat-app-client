@@ -1,7 +1,8 @@
 import { MessageCircle, SquarePen } from "lucide-react";
-import { Outlet, useNavigate, useParams } from "react-router";
+import { Navigate, Outlet, useNavigate, useParams } from "react-router";
 import { useEffect, useState } from "react";
 import { fetchWithAuth } from "../utils/helpers";
+import Modal from "./Modal";
 
 export interface User {
   id: string;
@@ -19,6 +20,7 @@ interface Peer {
 
 export default function SidebarLayout() {
   const [user, setUser] = useState<User>();
+  const [isOpenModal, setIsOpenModal] = useState(false);
   const [isUserLoading, setIsUserLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -29,16 +31,26 @@ export default function SidebarLayout() {
     })
       .then((res) => res.json())
       .then((data) => setUser(data))
-      .catch(() => navigate("login"))
+      // .catch(() => navigate("login"))
       .finally(() => setIsUserLoading(false));
   }, []);
+
+  if (isUserLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!user) {
+    <Navigate to={"login"} />;
+  }
 
   return (
     <div className="flex h-dvh text-neutral-900">
       <nav className="bg-white flex flex-col h-full border-r border-neutral-400 w-64">
         <h2 className="px-4 pt-4 flex items-center justify-between">
           <span className="text-lg tracking-tight">Conversations</span>
-          <SquarePen className="size-4" />
+          <button onClick={() => setIsOpenModal(true)}>
+            <SquarePen className="size-4 cursor-pointer" />
+          </button>
         </h2>
         <div className="mt-2 px-3 pt-2 h-full overflow-y-auto [scrollbar-width:thin] [scrollbar-color:rgb(220_220_220)_transparent]">
           <Peers />
@@ -66,6 +78,13 @@ export default function SidebarLayout() {
         </div>
       </nav>
       <Outlet />
+      {user && (
+        <Modal
+          userId={user.id}
+          isOpen={isOpenModal}
+          setIsOpen={setIsOpenModal}
+        />
+      )}
     </div>
   );
 }
@@ -84,6 +103,7 @@ function Peers() {
     })
       .then((res) => res.json())
       .then((data) => setPeers(data.peers))
+      .catch((err) => console.error(err.message))
       .finally(() => setIsPeersLoading(false));
   }, []);
 
@@ -98,6 +118,7 @@ function Peers() {
   return peers.map((peer) => (
     <button
       onClick={() => navigate(`/conversations/${peer.conversationId}`)}
+      key={peer.userId}
       className={`${
         peer.conversationId === conversationId &&
         "bg-neutral-200 hover:bg-neutral-200"

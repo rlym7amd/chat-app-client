@@ -3,6 +3,7 @@ import { Navigate, Outlet, useNavigate, useParams } from "react-router";
 import { useEffect, useState } from "react";
 import { fetchWithAuth } from "../utils/helpers";
 import Modal from "./Modal";
+import { ToastContainer } from "react-toastify";
 
 export interface User {
   id: string;
@@ -84,6 +85,7 @@ export default function SidebarLayout() {
           setIsOpen={setIsOpenModal}
         />
       )}
+      <ToastContainer />
     </div>
   );
 }

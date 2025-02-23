@@ -2,6 +2,7 @@ import { ChevronsUpDown, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { User } from "./SidebarLayout";
 import { fetchWithAuth } from "../utils/helpers";
+import { toast } from "react-toastify";
 
 export default function Modal(props: {
   userId: string;
@@ -81,8 +82,12 @@ export default function Modal(props: {
                   }),
                 },
               )
-                .then((res) => res.json())
-                .then((data) => console.log(data.message))
+                .then((res) => console.log(res))
+                .then((data) => {
+                  console.log(data);
+
+                  // toast.success(data.message);
+                })
                 .catch((err) => console.error(err.message))
                 .finally(() => ref.current?.close());
             }}

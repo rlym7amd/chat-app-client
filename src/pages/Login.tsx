@@ -100,7 +100,7 @@ export default function LoginPage() {
       <p className="h-3 m-0 text-xs text-red-600 mt-1">
         {errors.password ? errors.password.message : ""}
       </p>
-      <button className="bg-[#1A88A7] hover:bg-[#459cb4] transition-colors text-white font-semibold w-full rounded-lg py-2 mt-2">
+      <button className="bg-[#1A88A7] hover:bg-[#459cb4] transition-colors text-white font-semibold w-full rounded-lg py-2 mt-2 cursor-pointer">
         Login
       </button>
       <div className="text-xs text-end mt-2">

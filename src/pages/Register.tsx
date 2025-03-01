@@ -147,7 +147,7 @@ export default function RegisterPage() {
       </p>
       <button
         type="submit"
-        className="bg-[#1A88A7] hover:bg-[#459cb4] transition-colors text-white font-semibold w-full rounded-lg py-2 mt-2"
+        className="bg-[#1A88A7] hover:bg-[#459cb4] transition-colors text-white font-semibold w-full rounded-lg py-2 mt-2 cursor-pointer"
       >
         {isLoading ? "Loading.." : "Create an account"}
       </button>

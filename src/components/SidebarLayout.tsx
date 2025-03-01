@@ -22,11 +22,10 @@ interface Peer {
 export default function SidebarLayout() {
   const [user, setUser] = useState<User>();
   const [isOpenModal, setIsOpenModal] = useState(false);
-  const [isUserLoading, setIsUserLoading] = useState(false);
+  const [isUserLoading, setIsUserLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
-    setIsUserLoading(true);
     fetchWithAuth(`${import.meta.env.VITE_API_DOMAIN}/api/user/profile`, {
       credentials: "include",
     })
@@ -57,34 +56,26 @@ export default function SidebarLayout() {
         </div>
 
         <div className="mt-auto border-t border-neutral-400">
-          {user && (
-            <div className="flex justify-between w-full">
-              <p className="text-base p-4">
-                {isUserLoading ? "Loading..." : user.name}
-              </p>
-              <button
-                className="cursor-pointer p-4 border-l border-neutral-400 hover:bg-neutral-100 transition-colors"
-                onClick={() => {
-                  fetch(`${import.meta.env.VITE_API_DOMAIN}/api/auth/logout`, {
-                    method: "POST",
-                    credentials: "include",
-                  }).then(() => navigate("login"));
-                }}
-              >
-                Logout
-              </button>
-            </div>
-          )}
+          <div className="flex justify-between w-full">
+            <p className="text-base p-4">
+              {isUserLoading ? "Loading..." : user.name}
+            </p>
+            <button
+              className="cursor-pointer p-4 border-l border-neutral-400 hover:bg-neutral-100 transition-colors"
+              onClick={() => {
+                fetch(`${import.meta.env.VITE_API_DOMAIN}/api/auth/logout`, {
+                  method: "POST",
+                  credentials: "include",
+                }).then(() => navigate("login"));
+              }}
+            >
+              Logout
+            </button>
+          </div>
         </div>
       </nav>
       <Outlet />
-      {user && (
-        <Modal
-          userId={user.id}
-          isOpen={isOpenModal}
-          setIsOpen={setIsOpenModal}
-        />
-      )}
+      <Modal isOpen={isOpenModal} setIsOpen={setIsOpenModal} />
       <ToastContainer />
     </div>
   );
@@ -92,13 +83,11 @@ export default function SidebarLayout() {
 
 function Peers() {
   const [peers, setPeers] = useState<Peer[]>();
-  const [isPeersLoading, setIsPeersLoading] = useState(false);
+  const [isPeersLoading, setIsPeersLoading] = useState(true);
   const navigate = useNavigate();
   const { conversationId } = useParams();
 
   useEffect(() => {
-    setIsPeersLoading(true);
-
     fetchWithAuth(`${import.meta.env.VITE_API_DOMAIN}/api/participants/peers`, {
       credentials: "include",
     })
@@ -108,12 +97,12 @@ function Peers() {
       .finally(() => setIsPeersLoading(false));
   }, []);
 
-  if (!peers) {
-    return <p>No peers</p>;
-  }
-
   if (isPeersLoading) {
     return <p>Loading...</p>;
+  }
+
+  if (!peers || peers.length === 0) {
+    return <p>No peers</p>;
   }
 
   return peers.map((peer) => (

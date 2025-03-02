@@ -26,10 +26,13 @@ export default function SidebarLayout() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetchWithAuth(`${import.meta.env.VITE_API_DOMAIN}/api/user/profile`, {
+    fetchWithAuth(`${import.meta.env.VITE_API_DOMAIN}/api/users/me`, {
       credentials: "include",
     })
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) return;
+        return res.json();
+      })
       .then((data) => setUser(data))
       .finally(() => setIsUserLoading(false));
   }, []);

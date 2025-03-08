@@ -4,6 +4,7 @@ import Login from "./pages/Login";
 import AuthLayout from "./components/AuthLayout";
 import Conversation from "./pages/Conversation";
 import SidebarLayout from "./components/SidebarLayout";
+import Friends from "./pages/Friends";
 
 export default function App() {
   return (
@@ -22,6 +23,7 @@ export default function App() {
             path="/conversations/:conversationId"
             element={<Conversation />}
           />
+          <Route path="/friends" element={<Friends />} />
         </Route>
       </Routes>
     </Router>

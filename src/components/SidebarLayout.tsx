@@ -1,5 +1,12 @@
-import { MessageCircle, SquarePen } from "lucide-react";
-import { Navigate, Outlet, useNavigate, useParams } from "react-router";
+import { MessageCircle, Plus, User } from "lucide-react";
+import {
+  Link,
+  Navigate,
+  Outlet,
+  useLocation,
+  useNavigate,
+  useParams,
+} from "react-router";
 import { useEffect, useState } from "react";
 import { fetchWithAuth } from "../utils/helpers";
 import Modal from "./Modal";
@@ -24,6 +31,7 @@ export default function SidebarLayout() {
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [isUserLoading, setIsUserLoading] = useState(true);
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     fetchWithAuth(`${import.meta.env.VITE_API_DOMAIN}/api/users/me`, {
@@ -48,10 +56,23 @@ export default function SidebarLayout() {
   return (
     <div className="flex h-dvh text-neutral-900">
       <nav className="bg-white flex flex-col h-full border-r border-neutral-400 w-64">
-        <h2 className="px-4 pt-4 flex items-center justify-between">
-          <span className="text-lg tracking-tight">Conversations</span>
-          <button onClick={() => setIsOpenModal(true)}>
-            <SquarePen className="size-4 cursor-pointer" />
+        <Link
+          to={"friends"}
+          className={`${
+            location.pathname === "/friends" &&
+            "bg-neutral-200 hover:bg-neutral-200"
+          } flex gap-3 items-center mx-4 my-1 px-2 py-3 cursor-pointer rounded-lg hover:bg-neutral-100`}
+        >
+          <User className="size-6" />
+          <h2 className="text-xl font-semibold">Friends</h2>
+        </Link>
+        <h2 className="px-4 flex items-center justify-between">
+          <span className="text-sm uppercase">Direct Messages</span>
+          <button
+            className="cursor-pointer"
+            onClick={() => setIsOpenModal(true)}
+          >
+            <Plus className="size-4" />
           </button>
         </h2>
         <div className="mt-2 px-3 pt-2 h-full overflow-y-auto [scrollbar-width:thin] [scrollbar-color:rgb(220_220_220)_transparent]">

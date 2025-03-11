@@ -61,7 +61,7 @@ export default function SidebarLayout() {
           className={`${
             location.pathname === "/friends" &&
             "bg-neutral-200 hover:bg-neutral-200"
-          } flex gap-3 items-center mx-4 my-1 px-2 py-3 cursor-pointer rounded-lg hover:bg-neutral-100`}
+          } flex gap-3 items-center mx-4 my-2 px-2 py-1 cursor-pointer rounded-lg hover:bg-neutral-100`}
         >
           <User className="size-6" />
           <h2 className="text-xl font-semibold">Friends</h2>

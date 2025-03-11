@@ -5,6 +5,8 @@ import AuthLayout from "./components/AuthLayout";
 import Conversation from "./pages/Conversation";
 import SidebarLayout from "./components/SidebarLayout";
 import Friends from "./pages/Friends";
+import PendingFriends from "./pages/PendingFriends";
+import FriendsNav from "./components/FriendsNav";
 
 export default function App() {
   return (
@@ -23,7 +25,10 @@ export default function App() {
             path="/conversations/:conversationId"
             element={<Conversation />}
           />
-          <Route path="/friends" element={<Friends />} />
+          <Route element={<FriendsNav />}>
+            <Route path="friends" element={<Friends />} />
+            <Route path="friends/pending" element={<PendingFriends />} />
+          </Route>
         </Route>
       </Routes>
     </Router>

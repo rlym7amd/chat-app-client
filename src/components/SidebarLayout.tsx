@@ -59,7 +59,7 @@ export default function SidebarLayout() {
         <Link
           to={"friends"}
           className={`${
-            location.pathname === "/friends" &&
+            location.pathname.includes("friends") &&
             "bg-neutral-200 hover:bg-neutral-200"
           } flex gap-3 items-center mx-4 my-2 px-2 py-1 cursor-pointer rounded-lg hover:bg-neutral-100`}
         >

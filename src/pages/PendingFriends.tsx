@@ -2,14 +2,16 @@ import { useEffect, useState } from "react";
 import { fetchWithAuth } from "../utils/helpers";
 import { User } from "../components/SidebarLayout";
 
-export default function Friends() {
-  const [friends, setFriends] = useState<User[]>();
+export default function PendingFriends() {
+  const [friendRequests, setFriendRequests] = useState<User[]>();
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    fetchWithAuth(`${import.meta.env.VITE_API_DOMAIN}/api/users/me/friends`)
+    fetchWithAuth(
+      `${import.meta.env.VITE_API_DOMAIN}/api/users/me/friends/pending`,
+    )
       .then((res) => res.json())
-      .then((data) => setFriends(data.friends))
+      .then((data) => setFriendRequests(data.friends))
       .catch((err) => console.error(err.message))
       .finally(() => setIsLoading(false));
   }, []);
@@ -21,19 +23,19 @@ export default function Friends() {
   return (
     <main className="p-4">
       <span className="text-base uppercase">
-        all friends - {friends && friends.length}
+        all friends requests - {friendRequests && friendRequests.length}
       </span>
       <div className="mt-2">
-        {friends &&
-          friends.map((friend) => (
+        {friendRequests &&
+          friendRequests.map((friendRequest) => (
             <div className="flex justify-between p-2 hover:bg-neutral-200 transition rounded cursor-pointer border-t border-neutral-400">
-              <span>{friend.name}</span>
+              <span>{friendRequest.name}</span>
               <div className="flex gap-2">
                 <button className="px-2 py-1 cursor-pointer text-sm hover:bg-neutral-700 hover:text-white rounded transition">
-                  Message
+                  Accept
                 </button>
                 <button className="px-2 py-1 cursor-pointer text-sm text-red-700 hover:bg-red-700 hover:text-white rounded transition">
-                  Remove Friend
+                  Reject
                 </button>
               </div>
             </div>

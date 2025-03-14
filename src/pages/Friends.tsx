@@ -7,7 +7,7 @@ export default function Friends() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    fetchWithAuth(`${import.meta.env.VITE_API_DOMAIN}/api/users/me/friends`)
+    fetchWithAuth(`${import.meta.env.VITE_API_DOMAIN}/api/friends`)
       .then((res) => res.json())
       .then((data) => setFriends(data.friends))
       .catch((err) => console.error(err.message))
@@ -26,7 +26,10 @@ export default function Friends() {
       <div className="mt-2">
         {friends &&
           friends.map((friend) => (
-            <div className="flex justify-between p-2 hover:bg-neutral-200 transition rounded cursor-pointer border-t border-neutral-400">
+            <div
+              key={friend.id}
+              className="flex justify-between p-2 hover:bg-neutral-200 transition rounded cursor-pointer border-t border-neutral-400"
+            >
               <span>{friend.name}</span>
               <div className="flex gap-2">
                 <button className="px-2 py-1 cursor-pointer text-sm hover:bg-neutral-700 hover:text-white rounded transition">

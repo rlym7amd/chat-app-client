@@ -7,6 +7,7 @@ import SidebarLayout from "./components/SidebarLayout";
 import Friends from "./pages/Friends";
 import PendingFriends from "./pages/PendingFriends";
 import FriendsNav from "./components/FriendsNav";
+import AddFriend from "./pages/AddFriend";
 
 export default function App() {
   return (
@@ -28,6 +29,7 @@ export default function App() {
           <Route element={<FriendsNav />}>
             <Route path="friends" element={<Friends />} />
             <Route path="friends/pending" element={<PendingFriends />} />
+            <Route path="friends/add" element={<AddFriend />} />
           </Route>
         </Route>
       </Routes>

@@ -2,7 +2,6 @@ import { Link, Outlet, useLocation } from "react-router";
 
 export default function FriendsNav() {
   const location = useLocation();
-  console.log(location.pathname);
 
   return (
     <div className="flex-1">
@@ -15,13 +14,13 @@ export default function FriendsNav() {
         </Link>
         <Link
           to={"friends/pending"}
-          className={`${location.pathname.includes("pending") && "bg-neutral-200"} font-medium px-2 py-1 rounded cursor-pointer hover:bg-neutral-200 transition`}
+          className={`${location.pathname === "/friends/pending" && "bg-neutral-200"} font-medium px-2 py-1 rounded cursor-pointer hover:bg-neutral-200 transition`}
         >
           Pending
         </Link>
         <Link
           to={"friends/add"}
-          className="bg-green-500 text-white font-medium px-2 py-1 rounded cursor-pointer"
+          className={`${location.pathname === "/friends/add" ? "text-green-500" : "bg-green-500 text-white"} font-medium px-2 py-1 rounded cursor-pointer transition`}
         >
           Add Friend
         </Link>

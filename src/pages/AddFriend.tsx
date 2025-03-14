@@ -12,9 +12,9 @@ export default function AddFriend() {
           type="text"
           placeholder="You can add friends with their email"
           onChange={(e) => setRecipient(e.target.value)}
-          className="flex-1 p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-green-500"
+          className="flex-1 p-3 border border-gray-300 rounded focus:outline-none focus:border-green-500 text-sm"
         />
-        <button className="bg-green-500 text-white font-medium transition-colors p-3 rounded-lg cursor-pointer hover:bg-green-500/90">
+        <button className="bg-green-500 text-white text-sm font-medium transition-colors px-3 py-2 rounded cursor-pointer hover:bg-green-500/80">
           Send Friend Request
         </button>
       </div>

@@ -17,7 +17,7 @@ export default function Modal(props: {
       ref.current?.showModal();
     }
 
-    fetchWithAuth(`${import.meta.env.VITE_API_DOMAIN}/api/users/me/friends`)
+    fetchWithAuth(`${import.meta.env.VITE_API_DOMAIN}/api/friends`)
       .then((res) => res.json())
       .then((data) => setFriends(data.friends))
       .catch((err) => console.error(err.message));
@@ -80,7 +80,7 @@ export default function Modal(props: {
                     body: JSON.stringify({
                       receiptId,
                     }),
-                  }
+                  },
                 )
                   .then((res) => {
                     if (res.status === 409) {

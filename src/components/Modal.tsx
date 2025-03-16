@@ -83,11 +83,10 @@ export default function Modal(props: {
                   },
                 )
                   .then((res) => {
-                    if (res.status === 409) {
-                      throw new Error("Conversation already exists");
-                    }
                     if (!res.ok) {
-                      throw new Error("Something went bad. Please try again!");
+                      return res.json().then((data) => {
+                        throw new Error(data.message);
+                      });
                     }
                     return res.json();
                   })

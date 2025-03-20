@@ -1,17 +1,60 @@
 import { useEffect, useState } from "react";
 import { fetchWithAuth } from "../utils/helpers";
 import { User } from "../components/SidebarLayout";
+import { toast } from "react-toastify";
 
 export default function Friends() {
   const [friends, setFriends] = useState<User[]>();
   const [isLoading, setIsLoading] = useState(true);
 
+  async function fetchFriends() {
+    try {
+      const res = await fetchWithAuth(
+        `${import.meta.env.VITE_API_DOMAIN}/api/friends`
+      );
+      const data = await res.json();
+      setFriends(data.friends);
+    } catch (err) {
+      if (err instanceof Error) {
+        console.error(err.message);
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  async function handleDeleteFriend(id: string) {
+    // Optimistically remove the record from state
+    setFriends((prevFriends) =>
+      prevFriends?.filter((friend) => friend.id !== id)
+    );
+
+    const res = await fetchWithAuth(
+      `${import.meta.env.VITE_API_DOMAIN}/api/friends`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          friendId: id,
+        }),
+      }
+    );
+
+    if (!res.ok) {
+      const error = await res.json();
+      return toast.error(error.message);
+    }
+
+    const data = await res.json();
+    toast.success(data.message);
+
+    fetchFriends();
+  }
+
   useEffect(() => {
-    fetchWithAuth(`${import.meta.env.VITE_API_DOMAIN}/api/friends`)
-      .then((res) => res.json())
-      .then((data) => setFriends(data.friends))
-      .catch((err) => console.error(err.message))
-      .finally(() => setIsLoading(false));
+    fetchFriends();
   }, []);
 
   if (isLoading) {
@@ -35,7 +78,10 @@ export default function Friends() {
                 <button className="px-2 py-1 cursor-pointer text-sm hover:bg-neutral-700 hover:text-white rounded transition">
                   Message
                 </button>
-                <button className="px-2 py-1 cursor-pointer text-sm text-red-700 hover:bg-red-700 hover:text-white rounded transition">
+                <button
+                  onClick={() => handleDeleteFriend(friend.id)}
+                  className="px-2 py-1 cursor-pointer text-sm text-red-700 hover:bg-red-700 hover:text-white rounded transition"
+                >
                   Remove Friend
                 </button>
               </div>

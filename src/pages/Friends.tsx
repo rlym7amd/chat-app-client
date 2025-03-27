@@ -30,15 +30,9 @@ export default function Friends() {
     );
 
     const res = await fetchWithAuth(
-      `${import.meta.env.VITE_API_DOMAIN}/api/friends`,
+      `${import.meta.env.VITE_API_DOMAIN}/api/friends/${id}`,
       {
         method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          friendId: id,
-        }),
       }
     );
 
@@ -75,7 +69,10 @@ export default function Friends() {
             >
               <span>{friend.name}</span>
               <div className="flex gap-2">
-                <button className="px-2 py-1 cursor-pointer text-sm hover:bg-neutral-700 hover:text-white rounded transition">
+                <button
+                  onClick={() => {}}
+                  className="px-2 py-1 cursor-pointer text-sm hover:bg-neutral-700 hover:text-white rounded transition"
+                >
                   Message
                 </button>
                 <button

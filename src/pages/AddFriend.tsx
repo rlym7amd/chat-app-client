@@ -23,11 +23,10 @@ export default function AddFriend() {
     resolver: zodResolver(addFriendSchema),
   });
   const navigate = useNavigate();
-  console.log(errors);
 
   const onSubmit: SubmitHandler<AddFriendInput> = async (data) => {
     const res = await fetchWithAuth(
-      `${import.meta.env.VITE_API_DOMAIN}/api/friends`,
+      `${import.meta.env.VITE_API_DOMAIN}/api/friend-requests`,
       {
         method: "POST",
         headers: {

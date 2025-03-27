@@ -12,6 +12,37 @@ export default function Modal(props: {
   const [friends, setFriends] = useState<User[]>();
   const [receiptId, setReceiptId] = useState<string>();
 
+  async function createConversationHandle() {
+    try {
+      const res = await fetchWithAuth(
+        `${import.meta.env.VITE_API_DOMAIN}/api/conversations`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            receiptId,
+          }),
+        }
+      );
+      const data = await res.json();
+
+      if (!res.ok) {
+        toast.error(data.message);
+      }
+
+      toast.success(data.message);
+    } catch (err) {
+      if (err instanceof Error) {
+        toast.error(err.message);
+      }
+    } finally {
+      props.setIsOpen(false);
+      ref.current?.close();
+    }
+  }
+
   useEffect(() => {
     if (props.isOpen) {
       ref.current?.showModal();
@@ -69,38 +100,7 @@ export default function Modal(props: {
             <button
               type="button"
               className="mt-2 py-1.5 px-3 bg-blue-700 hover:bg-blue-500 transition-colors cursor-pointer rounded-md text-white font-semibold"
-              onClick={() => {
-                fetchWithAuth(
-                  `${import.meta.env.VITE_API_DOMAIN}/api/conversations`,
-                  {
-                    method: "POST",
-                    headers: {
-                      "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                      receiptId,
-                    }),
-                  },
-                )
-                  .then((res) => {
-                    if (!res.ok) {
-                      return res.json().then((data) => {
-                        throw new Error(data.message);
-                      });
-                    }
-                    return res.json();
-                  })
-                  .then((data) => {
-                    toast.success(data.message);
-                  })
-                  .catch((err) => {
-                    toast.error(err.message);
-                  })
-                  .finally(() => {
-                    props.setIsOpen(false);
-                    ref.current?.close();
-                  });
-              }}
+              onClick={createConversationHandle}
             >
               Send
             </button>

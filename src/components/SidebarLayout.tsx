@@ -20,29 +20,63 @@ export interface User {
   updatedAt: string;
 }
 
-interface Peer {
-  userId: string;
-  conversationId: string;
-  user: User;
+interface Conversation {
+  id: string;
+  creatorId: string;
+  recipientId: string;
+  creator: User;
+  recipient: User;
+  createAt: string;
 }
 
 export default function SidebarLayout() {
   const [user, setUser] = useState<User>();
+  const [conversations, setConversations] = useState<Conversation[]>();
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [isUserLoading, setIsUserLoading] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
 
+  async function fetchConversations() {
+    try {
+      const res = await fetchWithAuth(
+        `${import.meta.env.VITE_API_DOMAIN}/api/conversations`
+      );
+      const data = await res.json();
+
+      setConversations(data.conversations);
+    } catch (err) {
+      if (err instanceof Error) {
+        console.error(err.message);
+      }
+    }
+  }
+
+  async function fetchCurrentLoggedInUser() {
+    try {
+      const res = await fetchWithAuth(
+        `${import.meta.env.VITE_API_DOMAIN}/api/users/me`
+      );
+
+      if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.message);
+      }
+
+      const data = await res.json();
+      setUser(data);
+    } catch (err) {
+      if (err instanceof Error) {
+        console.error(err.message);
+      }
+    } finally {
+      setIsUserLoading(false);
+    }
+  }
+
   useEffect(() => {
-    fetchWithAuth(`${import.meta.env.VITE_API_DOMAIN}/api/users/me`, {
-      credentials: "include",
-    })
-      .then((res) => {
-        if (!res.ok) return;
-        return res.json();
-      })
-      .then((data) => setUser(data))
-      .finally(() => setIsUserLoading(false));
+    fetchCurrentLoggedInUser();
+    fetchConversations();
   }, []);
 
   if (isUserLoading) {
@@ -76,7 +110,7 @@ export default function SidebarLayout() {
           </button>
         </h2>
         <div className="mt-2 px-3 pt-2 h-full overflow-y-auto [scrollbar-width:thin] [scrollbar-color:rgb(220_220_220)_transparent]">
-          <Peers />
+          {conversations && <Peers conversations={conversations} />}
         </div>
 
         <div className="mt-auto border-t border-neutral-400">
@@ -105,41 +139,21 @@ export default function SidebarLayout() {
   );
 }
 
-function Peers() {
-  const [peers, setPeers] = useState<Peer[]>();
-  const [isPeersLoading, setIsPeersLoading] = useState(true);
+function Peers(props: { conversations: Conversation[] }) {
   const navigate = useNavigate();
   const { conversationId } = useParams();
 
-  useEffect(() => {
-    fetchWithAuth(`${import.meta.env.VITE_API_DOMAIN}/api/participants/peers`, {
-      credentials: "include",
-    })
-      .then((res) => res.json())
-      .then((data) => setPeers(data.peers))
-      .catch((err) => console.error(err.message))
-      .finally(() => setIsPeersLoading(false));
-  }, []);
-
-  if (isPeersLoading) {
-    return <p>Loading...</p>;
-  }
-
-  if (!peers || peers.length === 0) {
-    return <p>No peers</p>;
-  }
-
-  return peers.map((peer) => (
+  return props.conversations.map((conversation) => (
     <button
-      onClick={() => navigate(`/conversations/${peer.conversationId}`)}
-      key={peer.userId}
+      onClick={() => navigate(`/conversations/${conversation.id}`)}
+      key={conversation.id}
       className={`${
-        peer.conversationId === conversationId &&
+        conversation.id === conversationId &&
         "bg-neutral-200 hover:bg-neutral-200"
       } w-full cursor-pointer hover:bg-neutral-100 transition-colors rounded-lg px-2 my-1 flex items-center gap-2`}
     >
       <MessageCircle className="size-4" />
-      <span className="px-2 py-1">{peer.user.name}</span>
+      <span className="px-2 py-1">{conversation.recipient.name}</span>
     </button>
   ));
 }

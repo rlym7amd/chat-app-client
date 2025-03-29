@@ -1,4 +1,4 @@
-import { MessageCircle, Plus, User } from "lucide-react";
+import { LogOut, MessageCircle, Plus, User } from "lucide-react";
 import {
   Link,
   Navigate,
@@ -123,7 +123,7 @@ export default function SidebarLayout() {
               {isUserLoading ? "Loading..." : user.name}
             </p>
             <button
-              className="cursor-pointer p-4 border-l border-neutral-400 hover:bg-neutral-100 transition-colors"
+              className="cursor-pointer p-4"
               onClick={() => {
                 fetch(`${import.meta.env.VITE_API_DOMAIN}/api/auth/logout`, {
                   method: "POST",
@@ -131,7 +131,7 @@ export default function SidebarLayout() {
                 }).then(() => navigate("login"));
               }}
             >
-              Logout
+              <LogOut className="size-4 hover:text-red-700" />
             </button>
           </div>
         </div>

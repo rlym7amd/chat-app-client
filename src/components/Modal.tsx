@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { User } from "./SidebarLayout";
 import { fetchWithAuth } from "../utils/helpers";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router";
 
 export default function Modal(props: {
   isOpen: boolean;
@@ -10,7 +11,8 @@ export default function Modal(props: {
 }) {
   const ref = useRef<HTMLDialogElement>(null);
   const [friends, setFriends] = useState<User[]>();
-  const [receiptId, setReceiptId] = useState<string>();
+  const [recipientId, setRecipientId] = useState<string>();
+  const navigate = useNavigate();
 
   async function createConversationHandle() {
     try {
@@ -22,17 +24,13 @@ export default function Modal(props: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            receiptId,
+            recipientId,
           }),
-        }
+        },
       );
-      const data = await res.json();
+      const { conversation } = await res.json();
 
-      if (!res.ok) {
-        toast.error(data.message);
-      }
-
-      toast.success(data.message);
+      navigate(`/conversations/${conversation.id}`);
     } catch (err) {
       if (err instanceof Error) {
         toast.error(err.message);
@@ -84,7 +82,7 @@ export default function Modal(props: {
                 id="user"
                 className="appearance-none focus:outline-none w-full px-2 py-1"
                 defaultValue="none"
-                onChange={(e) => setReceiptId(e.target.value)}
+                onChange={(e) => setRecipientId(e.target.value)}
               >
                 <option value="none" disabled>
                   Select a friend

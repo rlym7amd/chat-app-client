@@ -2,7 +2,7 @@ import { fetchWithAuth } from "../utils/helpers";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useNavigate } from "react-router";
+import { toast } from "react-toastify";
 
 const addFriendSchema = z.object({
   email: z
@@ -19,10 +19,10 @@ export default function AddFriend() {
     handleSubmit,
     setError,
     formState: { errors },
+    reset,
   } = useForm<AddFriendInput>({
     resolver: zodResolver(addFriendSchema),
   });
-  const navigate = useNavigate();
 
   const onSubmit: SubmitHandler<AddFriendInput> = async (data) => {
     const res = await fetchWithAuth(
@@ -47,7 +47,9 @@ export default function AddFriend() {
       return;
     }
 
-    navigate("/");
+    // clears the form and shows a toast
+    reset();
+    toast.success("Friend request sent!");
   };
 
   return (

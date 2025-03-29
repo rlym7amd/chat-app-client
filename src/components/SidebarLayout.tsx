@@ -114,7 +114,9 @@ export default function SidebarLayout() {
           </button>
         </h2>
         <div className="mt-2 px-3 pt-2 h-full overflow-y-auto [scrollbar-width:thin] [scrollbar-color:rgb(220_220_220)_transparent]">
-          {conversations && <Peers conversations={conversations} />}
+          {conversations && user && (
+            <Peers conversations={conversations} userId={user.id} />
+          )}
         </div>
 
         <div className="mt-auto border-t border-neutral-400">
@@ -143,7 +145,7 @@ export default function SidebarLayout() {
   );
 }
 
-function Peers(props: { conversations: Conversation[] }) {
+function Peers(props: { conversations: Conversation[]; userId: string }) {
   const navigate = useNavigate();
   const { conversationId } = useParams();
 
@@ -157,7 +159,11 @@ function Peers(props: { conversations: Conversation[] }) {
       } w-full cursor-pointer hover:bg-neutral-100 transition-colors rounded-lg px-2 my-1 flex items-center gap-2`}
     >
       <MessageCircle className="size-4" />
-      <span className="px-2 py-1">{conversation.recipient.name}</span>
+      <span className="px-2 py-1">
+        {conversation.creator.id === props.userId
+          ? conversation.recipient.name
+          : conversation.creator.name}
+      </span>
     </button>
   ));
 }

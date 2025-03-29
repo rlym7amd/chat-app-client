@@ -2,10 +2,12 @@ import { useEffect, useState } from "react";
 import { fetchWithAuth } from "../utils/helpers";
 import { User } from "../components/SidebarLayout";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router";
 
 export default function Friends() {
   const [friends, setFriends] = useState<User[]>();
   const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
 
   async function fetchFriends() {
     try {
@@ -47,6 +49,30 @@ export default function Friends() {
     fetchFriends();
   }
 
+  async function getOrCreateConversation(recipientId: string) {
+    try {
+      const res = await fetchWithAuth(
+        `${import.meta.env.VITE_API_DOMAIN}/api/conversations`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            recipientId,
+          }),
+        }
+      );
+
+      const { conversation } = await res.json();
+      navigate(`/conversations/${conversation.id}`);
+    } catch (err) {
+      if (err instanceof Error) {
+        console.error(err.message);
+      }
+    }
+  }
+
   useEffect(() => {
     fetchFriends();
   }, []);
@@ -70,7 +96,7 @@ export default function Friends() {
               <span>{friend.name}</span>
               <div className="flex gap-2">
                 <button
-                  onClick={() => {}}
+                  onClick={() => getOrCreateConversation(friend.id)}
                   className="px-2 py-1 cursor-pointer text-sm hover:bg-neutral-700 hover:text-white rounded transition"
                 >
                   Message

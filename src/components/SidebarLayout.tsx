@@ -40,7 +40,7 @@ export default function SidebarLayout() {
   async function fetchConversations() {
     try {
       const res = await fetchWithAuth(
-        `${import.meta.env.VITE_API_DOMAIN}/api/conversations`
+        `${import.meta.env.VITE_API_DOMAIN}/api/conversations`,
       );
       const data = await res.json();
 
@@ -55,7 +55,7 @@ export default function SidebarLayout() {
   async function fetchCurrentLoggedInUser() {
     try {
       const res = await fetchWithAuth(
-        `${import.meta.env.VITE_API_DOMAIN}/api/users/me`
+        `${import.meta.env.VITE_API_DOMAIN}/api/users/me`,
       );
 
       if (!res.ok) {
@@ -78,6 +78,10 @@ export default function SidebarLayout() {
     fetchCurrentLoggedInUser();
     fetchConversations();
   }, []);
+
+  useEffect(() => {
+    fetchConversations();
+  }, [location]);
 
   if (isUserLoading) {
     return <div>Loading...</div>;

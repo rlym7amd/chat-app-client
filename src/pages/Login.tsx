@@ -2,6 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router";
 import { z } from "zod";
+import { useAuth } from "../hooks/useAuth";
 
 const loginFormSchema = z.object({
   email: z
@@ -14,7 +15,7 @@ const loginFormSchema = z.object({
     .min(8, "Password must contian 8 characters"),
 });
 
-type LoginFormInput = z.infer<typeof loginFormSchema>;
+export type LoginFormInput = z.infer<typeof loginFormSchema>;
 
 export default function LoginPage() {
   const {
@@ -26,34 +27,22 @@ export default function LoginPage() {
     resolver: zodResolver(loginFormSchema),
   });
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const onSubmit: SubmitHandler<LoginFormInput> = async (data) => {
-    const res = await fetch(
-      `${import.meta.env.VITE_API_DOMAIN}/api/auth/login`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify({
-          email: data.email,
-          password: data.password,
-        }),
+    try {
+      await login(data);
+      navigate("/");
+    } catch (err) {
+      if (err instanceof Error) {
+        setError("root", {
+          type: "validate",
+          message: err.message,
+        });
       }
-    );
-
-    if (!res.ok) {
-      const error = await res.json();
-      setError("root", {
-        type: "validate",
-        message: error.message,
-      });
-      return;
     }
-
-    navigate("/");
   };
+
   return (
     <form className="w-[600px]" onSubmit={handleSubmit(onSubmit)}>
       <div className="h-3 mb-3">

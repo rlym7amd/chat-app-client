@@ -8,31 +8,39 @@ import Friends from "./pages/Friends";
 import PendingFriends from "./pages/PendingFriends";
 import FriendsNav from "./components/FriendsNav";
 import AddFriend from "./pages/AddFriend";
+import AuthProvider from "./components/AuthProvider";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 export default function App() {
   return (
-    <Router>
-      <Routes>
-        <Route element={<AuthLayout />}>
-          <Route path="/register" element={<Register />} />
-          <Route path="/login" element={<Login />} />
-        </Route>
-        <Route element={<SidebarLayout />}>
-          <Route
-            path="/"
-            element={<div className="p-4">Please, select a conversation</div>}
-          />
-          <Route
-            path="/conversations/:conversationId"
-            element={<Conversation />}
-          />
-          <Route element={<FriendsNav />}>
-            <Route path="friends" element={<Friends />} />
-            <Route path="friends/pending" element={<PendingFriends />} />
-            <Route path="friends/add" element={<AddFriend />} />
+    <AuthProvider>
+      <Router>
+        <Routes>
+          <Route element={<AuthLayout />}>
+            <Route path="/register" element={<Register />} />
+            <Route path="/login" element={<Login />} />
           </Route>
-        </Route>
-      </Routes>
-    </Router>
+          <Route element={<ProtectedRoute />}>
+            <Route element={<SidebarLayout />}>
+              <Route
+                path="/"
+                element={
+                  <div className="p-4">Please, select a conversation</div>
+                }
+              />
+              <Route
+                path="/conversations/:conversationId"
+                element={<Conversation />}
+              />
+              <Route element={<FriendsNav />}>
+                <Route path="friends" element={<Friends />} />
+                <Route path="friends/pending" element={<PendingFriends />} />
+                <Route path="friends/add" element={<AddFriend />} />
+              </Route>
+            </Route>
+          </Route>
+        </Routes>
+      </Router>
+    </AuthProvider>
   );
 }

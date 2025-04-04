@@ -1,3 +1,5 @@
+import { User } from "./definitions";
+
 export async function fetchWithAuth(url: string, options: RequestInit = {}) {
   const res = await fetch(url, {
     ...options,
@@ -11,7 +13,7 @@ export async function fetchWithAuth(url: string, options: RequestInit = {}) {
         ...options,
         credentials: "include",
         method: "POST",
-      },
+      }
     );
 
     if (!refreshRes.ok) {
@@ -26,4 +28,16 @@ export async function fetchWithAuth(url: string, options: RequestInit = {}) {
   }
 
   return res;
+}
+
+export async function fetchCurrentUser(): Promise<User> {
+  const res = await fetchWithAuth(
+    `${import.meta.env.VITE_API_DOMAIN}/api/current-user`
+  );
+
+  if (!res.ok) {
+    const err = await res.json();
+    throw new Error(err.message);
+  }
+  return res.json();
 }

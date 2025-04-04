@@ -2,6 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router";
 import { z } from "zod";
+import { useAuth } from "../hooks/useAuth";
 
 const registerFormSchema = z.object({
   email: z
@@ -16,7 +17,7 @@ const registerFormSchema = z.object({
     .min(8, "Password must contian 8 characters"),
 });
 
-type RegisterFormInput = z.infer<typeof registerFormSchema>;
+export type RegisterFormInput = z.infer<typeof registerFormSchema>;
 
 export default function RegisterPage() {
   const {
@@ -28,34 +29,25 @@ export default function RegisterPage() {
     resolver: zodResolver(registerFormSchema),
   });
   const navigate = useNavigate();
+  const { register: registerUser } = useAuth();
 
   const onSubmit: SubmitHandler<RegisterFormInput> = async (data) => {
-    const res = await fetch(
-      `${import.meta.env.VITE_API_DOMAIN}/api/auth/register`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify({
-          email: data.email,
-          name: `${data.firstName} ${data.lastName}`,
-          password: data.password,
-        }),
+    try {
+      const { firstName, lastName, ...rest } = data;
+      const newData = {
+        name: `${firstName} ${lastName}`,
+        ...rest,
+      };
+      await registerUser(newData);
+      navigate("/");
+    } catch (err) {
+      if (err instanceof Error) {
+        setError("root", {
+          type: "validate",
+          message: err.message,
+        });
       }
-    );
-
-    if (!res.ok) {
-      const error = await res.json();
-      setError("root", {
-        type: "validate",
-        message: error.message,
-      });
-      return;
     }
-
-    navigate("/");
   };
 
   return (

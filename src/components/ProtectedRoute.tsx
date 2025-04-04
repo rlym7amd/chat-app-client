@@ -3,7 +3,6 @@ import { useAuth } from "../hooks/useAuth";
 
 export default function ProtectedRoute() {
   const { currentUser, loading } = useAuth();
-  console.log({ currentUser });
 
   if (loading) {
     return <div>Loading...</div>;

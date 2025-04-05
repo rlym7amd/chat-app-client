@@ -62,6 +62,22 @@ export default function ConversationPane() {
 
       socket.emit("chat message", newMessage);
       setInput("");
+
+      // Save message in Database
+      fetchWithAuth(
+        `${
+          import.meta.env.VITE_API_DOMAIN
+        }/api/conversations/${conversationId}/messages`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            content: input,
+          }),
+        }
+      );
     }
   };
 

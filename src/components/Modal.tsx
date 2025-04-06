@@ -1,9 +1,9 @@
 import { ChevronsUpDown, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { User } from "./SidebarLayout";
 import { fetchWithAuth } from "../utils/helpers";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router";
+import { User } from "../utils/definitions";
 
 export default function Modal(props: {
   isOpen: boolean;
@@ -26,7 +26,7 @@ export default function Modal(props: {
           body: JSON.stringify({
             recipientId,
           }),
-        },
+        }
       );
       const { conversation } = await res.json();
 

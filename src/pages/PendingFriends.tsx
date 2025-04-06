@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { fetchWithAuth } from "../utils/helpers";
-import { User } from "../components/SidebarLayout";
 import { toast } from "react-toastify";
+import { User } from "../utils/definitions";
 
 interface FriendRequest {
   id: string;

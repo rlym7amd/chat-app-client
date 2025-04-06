@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { fetchWithAuth } from "../utils/helpers";
-import { User } from "../components/SidebarLayout";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router";
+import { User } from "../utils/definitions";
 
 export default function Friends() {
   const [friends, setFriends] = useState<User[]>();

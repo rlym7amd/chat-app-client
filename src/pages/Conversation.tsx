@@ -6,7 +6,7 @@ import { io } from "socket.io-client";
 import { Conversation, Message } from "../utils/definitions";
 import { useAuth } from "../hooks/useAuth";
 
-const socket = io("http://localhost:1337");
+const socket = io(import.meta.env.VITE_API_DOMAIN);
 
 export default function ConversationPane() {
   const { conversationId } = useParams();

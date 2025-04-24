@@ -35,6 +35,7 @@ export default function AddFriend() {
         body: JSON.stringify({
           email: data.email,
         }),
+        credentials: "include",
       }
     );
 
